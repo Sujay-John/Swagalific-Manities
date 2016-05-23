@@ -21,14 +21,19 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "realm.h"
 #include <stdio.h>
 #include <time.h>
+#include <stdlib.h>
+#include <string.h>
+//#define  bigBaddieB  219
 // Find types: h(ealth),s(trength),m(agic),g(old),w(eapon)
 const char FindTypes[]={'h','s','m','g','w'};
 
-
+int exp = 0;
 // The following arrays define the bad guys and 
 // their battle properies - ordering matters!
 // Baddie types : O(gre),T(roll),D(ragon),H(ag)
 const char Baddies[]={'O','T','D','H'};
+//static char bigBaddieB = 'Z';
+ //const char bigBaddie[]={'Z'};
 // The following is 4 sets of 4 damage types
 const byte WeaponDamage[]={10,10,5,25,10,10,5,25,10,15,5,15,5,5,2,10};
 #define ICE_SPELL_COST 10
@@ -42,7 +47,6 @@ int GameStarted = 0;
 tPlayer thePlayer;
 tRealm theRealm;
 void delay(int len);
-
 unsigned prbs()
 {
 	// This is an unverified 31 bit PRBS generator
@@ -78,10 +82,18 @@ unsigned range_random(unsigned range)
 {
 	return prbs() % (range+1);
 }
+
+
+int expCheck(int newExp) //Exp function to check and create baddies
+	{
+	 exp = newExp+exp;
+	return exp;
+	}
+
 void runGame(void)
 {
 	char ch;
-	
+	char cheat;
 	printString("MicroRealms on the LPC810.");	
 	showHelp();		
 	while(GameStarted == 0)
@@ -103,33 +115,64 @@ void runGame(void)
 	while (1)
 	{
 		ch = getUserInput();
+
 		ch = ch | 32; // enforce lower case
+	
+ 	
+	//char str1[20];
+	//scanf("%c",str1);
 		switch (ch) {
+		
 			case 'h' : {
 				showHelp();
 				break;
+
 			}
-			case 'n' : {
-				showGameMessage("North");
+			case 'c':{	
+			
+			printf("EnterCheat");
+			while(ch == 'c'){
+			
+			cheat = getUserInput();
+			
+			if(cheat == 'u'){
+				
+				showGameMessage("Are You");
+				showGameMessage("Kaaa Chiiing");
+				break;
+
+					}
+			else{
+			break;
+			}
+
+
+			}	
+					
+				
+			}
+			case 'u' : {
+				showGameMessage("Up");
 				step('n',&thePlayer,&theRealm);
 				break;
 			}
-			case 's' : {
-				showGameMessage("South");
+			case 'd' : {
+				showGameMessage("Down");
 				step('s',&thePlayer,&theRealm);
 				break;
 
 			}
-			case 'e' : {
-				showGameMessage("East");
+			case 'r' : {
+				showGameMessage("Right");
 				step('e',&thePlayer,&theRealm);
 				break;
 			}
-			case 'w' : {
-				showGameMessage("West");
+			case 'l' : {
+				showGameMessage("Left");
 				step('w',&thePlayer,&theRealm);
 				break;
 			}
+
 			case '#' : {		
 				if (thePlayer.wealth)		
 				{
@@ -145,7 +188,9 @@ void runGame(void)
 				break;
 			}
 		} // end switch
-	} // end while
+  
+
+      	} // end while
 }
 void step(char Direction,tPlayer *Player,tRealm *Realm)
 {
@@ -194,22 +239,22 @@ void step(char Direction,tPlayer *Player,tRealm *Realm)
 		// const char Baddies[]={'O','T','B','H'};
 		case 'O' :{
 			showGameMessage("A smelly green Ogre appears before you");
-			Consumed = doChallenge(Player,0);
+			Consumed = doChallenge(Player,0,AreaContents);
 			break;
 		}
 		case 'T' :{
 			showGameMessage("An evil troll challenges you");
-			Consumed = doChallenge(Player,1);
+			Consumed = doChallenge(Player,1,AreaContents);
 			break;
 		}
 		case 'D' :{
 			showGameMessage("A smouldering Dragon blocks your way !");
-			Consumed = doChallenge(Player,2);
+			Consumed = doChallenge(Player,2,AreaContents);
 			break;
 		}
 		case 'H' :{
 			showGameMessage("A withered hag cackles at you wickedly");
-			Consumed = doChallenge(Player,3);
+			Consumed = doChallenge(Player,3,AreaContents);
 			break;
 		}
 		case 'h' :{
@@ -253,7 +298,7 @@ void step(char Direction,tPlayer *Player,tRealm *Realm)
 	if (Consumed)
 		Realm->map[new_y][new_x] = '.'; // remove any item that was found
 }
-int doChallenge(tPlayer *Player,int BadGuyIndex)
+int doChallenge(tPlayer *Player,int BadGuyIndex, byte BadGuyType)  //pk
 {
 	char ch;
 	char Damage;
@@ -332,11 +377,20 @@ int doChallenge(tPlayer *Player,int BadGuyIndex)
 				}
 				case 'p':
 				case 'P':
-				{
+				{	
+					if (BadGuyType == 'O')
+					{
+						printString("A Mere Punch Won't hurt ME HAHAHAAHA");
+						break;
+					}
+
+					else
+					{
 					printString("Thump!");
 					BadGuyHealth -= 1+range_random(Player->strength);
 					setStrength(Player,Player->strength-1);
 					break;
+					}
 				}
 				default: {
 					printString("You fumble. Uh oh");
@@ -361,6 +415,8 @@ int doChallenge(tPlayer *Player,int BadGuyIndex)
 		{ // You won!
 			Player->wealth = 50 + range_random(50);			
 			showGameMessage("You win! Their gold is yours");			
+			
+			expCheck(1);
 			return 1;
 		}
 		
@@ -444,6 +500,10 @@ const char *getWeaponName(int index)
 
 void setHealth(tPlayer *Player,int health)
 {
+	if (health> 1000)	
+        {
+	  health = 9000;
+	}
 	if (health > 100)
 		health = 100;
 	if (health < 0)
@@ -453,6 +513,10 @@ void setHealth(tPlayer *Player,int health)
 }	
 void setStrength(tPlayer *Player, byte strength)
 {
+	if (strength> 1000)	
+        {
+	  strength = 9000;
+	}
 	if (strength > 100)
 		strength = 100;
 	if (strength < 0)
@@ -465,6 +529,8 @@ void initPlayer(tPlayer *Player,tRealm *theRealm)
 	int index=0;
 	byte x,y;
 	char ch=0;
+	char cheater = "PIMP";
+
 	// Initialize the player's attributes
 	eputs("Enter the player's name: ");
 	while ( (index < MAX_NAME_LEN) && (ch != '\n') && (ch != '\r'))
@@ -476,11 +542,30 @@ void initPlayer(tPlayer *Player,tRealm *theRealm)
 			eputc(ch);
 		}
 	}
-	Player->name[index]=0; // terminate the name
-	setHealth(Player,100);
-	Player->strength=50+range_random(50);
-	Player->magic=50+range_random(50);	
-	Player->wealth=10+range_random(10);
+	//cheater = Player->name;
+	//printf("Cheater is");
+	//printf(cheater);
+	if ( cheater == "PIMP")
+	{	
+		
+		setHealth(Player,1);
+		Player->strength=1+range_random(1);
+		Player->magic=1+range_random(1);	
+		Player->wealth=1+range_random(1);
+		//Player->health = 1000+range_random(1000);
+		//int health = 1200;
+		//setHealth(Player,Player->health);
+	}
+
+	else
+	{
+
+		Player->name[index]=0; // terminate the name
+		setHealth(Player,100);
+		Player->strength=50+range_random(50);
+		Player->magic=50+range_random(50);	
+		Player->wealth=10+range_random(10);
+	}
 	Player->Weapon1 = 0;
 	Player->Weapon2 = 0;
 	// Initialize the player's location
@@ -516,9 +601,12 @@ void showPlayer(tPlayer *thePlayer)
 	printString(getWeaponName(thePlayer->Weapon2));
 }
 void initRealm(tRealm *Realm)
-{
+{	
+	int exp=0 ; //pk
 	int x,y;
 	int Rnd;
+
+
 	// clear the map to begin with
 	for (y=0;y < MAP_HEIGHT; y++)
 	{
@@ -533,10 +621,21 @@ void initRealm(tRealm *Realm)
 			else if (Rnd >= 90) // put in some rocks
 				Realm->map[y][x]='*'; 
 			else // put in empty space
-				Realm->map[y][x] = '.';	
+				Realm->map[y][x] = '.';
+
+			
 		}
 	}
-	
+		
+	exp =  expCheck(0);//pk
+	printf("this is EXP  ");
+	//printf(exp);
+		
+	if (exp>=1){
+	x = range_random(MAP_WIDTH);
+	y = range_random(MAP_HEIGHT);
+	Realm->map[y][x]= 'R';
+	}
 	// finally put the exit to the next level in
 	x = range_random(MAP_WIDTH);
 	y = range_random(MAP_HEIGHT);
@@ -580,7 +679,10 @@ void showGameMessage(char *Msg)
 	printString("Ready");	
 }
 char getUserInput()
-{
+{//pk
+	
+	//char ch = getchar();
+	
 	char ch = 0;	
 	ch = getchar();
 	// need to flush out the input buffer
