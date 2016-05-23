@@ -23,7 +23,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
-//#define  bigBaddieB  219
 // Find types: h(ealth),s(trength),m(agic),g(old),w(eapon)
 const char FindTypes[]={'h','s','m','g','w'};
 
@@ -32,7 +31,6 @@ int exp = 0;
 // their battle properies - ordering matters!
 // Baddie types : O(gre),T(roll),D(ragon),H(ag)
 const char Baddies[]={'O','T','D','H'};
-//static char bigBaddieB = 'Z';
  //const char bigBaddie[]={'Z'};
 // The following is 4 sets of 4 damage types
 const byte WeaponDamage[]={10,10,5,25,10,10,5,25,10,15,5,15,5,5,2,10};
@@ -128,29 +126,26 @@ void runGame(void)
 				break;
 
 			}
-			case 'c':{	
+			case 'c':{
 			
 			printf("EnterCheat");
 			while(ch == 'c'){
 			
 			cheat = getUserInput();
 			
-			if(cheat == 'u'){
+			if(cheat == 'u')
+            {
 				
 				showGameMessage("Are You");
 				showGameMessage("Kaaa Chiiing");
 				break;
 
-					}
-			else{
+            }
+			else
 			break;
-			}
-
-
-			}	
-					
+          }
 				
-			}
+       }
 			case 'u' : {
 				showGameMessage("Up");
 				step('n',&thePlayer,&theRealm);
@@ -188,9 +183,7 @@ void runGame(void)
 				break;
 			}
 		} // end switch
-  
-
-      	} // end while
+    } // end while
 }
 void step(char Direction,tPlayer *Player,tRealm *Realm)
 {
@@ -622,13 +615,10 @@ void initRealm(tRealm *Realm)
 				Realm->map[y][x]='*'; 
 			else // put in empty space
 				Realm->map[y][x] = '.';
-
-			
 		}
 	}
-		
 	exp =  expCheck(0);//pk
-	printf("this is EXP  ");
+	//printf("this is EXP  ");
 	//printf(exp);
 		
 	if (exp>=1){
