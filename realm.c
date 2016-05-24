@@ -136,10 +136,8 @@ void runGame(void)
 			
 			if(cheat == 'p')
             {
-				showGameMessage("Kaaa Chiiing");
-				//showGameMessage("Are You ");
-				setHealth(&thePlayer,100); // max health once cheat code p is used
-				//showGameMessage("Kaaa Chiiing");
+				showGameMessage("Player Smash");
+				setStrength(&thePlayer,1001);//Cheat increases player strength
 				break;
             }
 			else
@@ -545,7 +543,7 @@ void initPlayer(tPlayer *Player,tRealm *theRealm)
 	int index=0;
 	byte x,y;
 	char ch=0;
-	char cheater = "PIMP";
+	
 
 	// Initialize the player's attributes
 	eputs("Enter the player's name: ");
@@ -558,30 +556,14 @@ void initPlayer(tPlayer *Player,tRealm *theRealm)
 			eputc(ch);
 		}
 	}
-	//cheater = Player->name;
-	//printf("Cheater is");
-	//printf(cheater);
-	if ( cheater == "PIMP")
-	{	
-		
-		setHealth(Player,1);
-		Player->strength=1+range_random(1);
-		Player->magic=1+range_random(1);	
-		Player->wealth=1+range_random(1);
-		//Player->health = 1000+range_random(1000);
-		//int health = 1200;
-		//setHealth(Player,Player->health);
-	}
-
-	else
-	{
+	
 
 		Player->name[index]=0; // terminate the name
 		setHealth(Player,100);
 		Player->strength=50+range_random(50);
 		Player->magic=50+range_random(50);	
 		Player->wealth=10+range_random(10);
-	}
+	
 	Player->Weapon1 = 0;
 	Player->Weapon2 = 0;
 	// Initialize the player's location
