@@ -115,6 +115,7 @@ void runGame(void)
 	while (1)
 	{
 		ch = getUserInput();
+		if (ch != '\033')
 		ch = ch | 32; // enforce lower case
 	
 		//char str1[20];
@@ -144,7 +145,6 @@ void runGame(void)
 			else
 			break;
           }
-				
        }
 			case 'u' : {
 				showGameMessage("Up");
@@ -168,6 +168,29 @@ void runGame(void)
 				break;
 			}
 
+           // An arrow on the keyboard is represented by 3 characters: '\033', '[' , 'A'  'B' 'C'  'D'
+			case '\033' : {
+                getchar();
+				switch(getchar()){
+					case 'A':	// arrow up.
+						showGameMessage("Up");
+						step('n',&thePlayer,&theRealm);
+						break;
+					case 'B':	// arrow down.
+						showGameMessage("Down");
+						step('s',&thePlayer,&theRealm);
+						break;
+					case 'C':	// arrow right.
+						showGameMessage("Right");
+						step('e',&thePlayer,&theRealm);
+						break;
+					case 'D':	// arrow left.
+						showGameMessage("Left");
+						step('w',&thePlayer,&theRealm);
+						break;
+					}
+				break;
+			}
 			case '#' : {		
 				if (thePlayer.wealth)		
 				{
