@@ -26,7 +26,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 // Find types: h(ealth),s(trength),m(agic),g(old),w(eapon)
 const char FindTypes[]={'h','s','m','g','w'};
 
-int exp = 0;
+
 // The following arrays define the bad guys and 
 // their battle properies - ordering matters!
 // Baddie types : O(gre),T(roll),D(ragon),H(ag)
@@ -42,6 +42,7 @@ const byte FireSpellDamage[]={20,10,5,0};
 const byte LightningSpellDamage[]={15,10,25,0};
 const byte BadGuyDamage[]={10,10,15,5};
 int GameStarted = 0;
+//int exp = 0;
 tPlayer thePlayer;
 tRealm theRealm;
 void delay(int len);
@@ -84,8 +85,9 @@ unsigned range_random(unsigned range)
 
 int expCheck(int newExp) //Exp function to check and create baddies
 	{
+	int exp;
 	 exp = newExp+exp;
-	return exp;
+	 return exp;
 	}
 
 void runGame(void)
@@ -113,12 +115,10 @@ void runGame(void)
 	while (1)
 	{
 		ch = getUserInput();
-
 		ch = ch | 32; // enforce lower case
 	
- 	
-	//char str1[20];
-	//scanf("%c",str1);
+		//char str1[20];
+		//scanf("%c",str1);
 		switch (ch) {
 		
 			case 'h' : {
@@ -133,13 +133,13 @@ void runGame(void)
 			
 			cheat = getUserInput();
 			
-			if(cheat == 'u')
+			if(cheat == 'p')
             {
-				
-				showGameMessage("Are You");
 				showGameMessage("Kaaa Chiiing");
+				//showGameMessage("Are You ");
+				setHealth(&thePlayer,100); // max health once cheat code p is used
+				//showGameMessage("Kaaa Chiiing");
 				break;
-
             }
 			else
 			break;

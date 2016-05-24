@@ -36,6 +36,6 @@ void step(char Direction,tPlayer *Player,tRealm *Realm);
 void setHealth(tPlayer *Player,int health);
 void setStrength(tPlayer *Player, byte strength);
 int addWeapon(tPlayer *Player, int Weapon);
-int doChallenge(tPlayer *Player, int BadGuyIndex);
+int doChallenge(tPlayer *Player, int BadGuyIndex,byte AreaContents);
 const char *getWeaponName(int index);
 void zap(void);
